@@ -14,18 +14,14 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone upstream and force push branches and tags
+      - name: Sync repository
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git clone --mirror https://github.com/2061360308/DouYinSparkFlow.git upstream.git
+          set -e
+          git clone --bare https://github.com/2061360308/DouYinSparkFlow.git upstream.git
           cd upstream.git
-          # Remove pull request refs (cannot be pushed)
-          git for-each-ref --format='%(refname)' refs/pull/ | xargs -r git update-ref -d
-          git remote set-url --push origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          # Push all branches and tags (not pull refs)
-          git push --all origin
-          git push --tags origin
-          cd ..
-          rm -rf upstream.git
-          echo "Sync complete! Full repository with history, branches, tags and binaries imported."
+          git push --mirror "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" || true
+          git push --all "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --tags "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          echo "Sync complete!"
