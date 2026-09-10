@@ -6,6 +6,8 @@ on:
       - '.github/workflows/sync-upstream.yml'
   workflow_dispatch:
 
+permissions: write-all
+
 jobs:
   sync:
     runs-on: ubuntu-latest
