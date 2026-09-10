@@ -1,6 +1,9 @@
 name: Sync from upstream
 
 on:
+  push:
+    paths:
+      - '.github/workflows/sync-upstream.yml'
   workflow_dispatch:
 
 jobs:
@@ -17,4 +20,4 @@ jobs:
           git push --mirror origin
           cd ..
           rm -rf upstream.git
-          echo "Sync complete!"
+          echo "Sync complete! Full repository with history and binaries imported."
