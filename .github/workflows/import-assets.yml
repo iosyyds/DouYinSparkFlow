@@ -1,0 +1,47 @@
+name: Import Binary Assets
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+      - name: Download and commit binary assets from upstream
+        run: |
+          # Download binary files from upstream repo
+          UPSTREAM="https://raw.githubusercontent.com/2061360308/DouYinSparkFlow/main"
+          
+          # Create directories
+          mkdir -p docs/images docs/static/css/element-plus docs/static/js
+          
+          # Download images
+          for img in "Cookies获取.png" "cover.png" "image.png" "qrcode_1788144510171.jpg" "启用action.png" "启用workflow.png" "好友抖音号获取.png" "好友昵称获取.png" "屏幕截图 2026-02-14 223607.png" "屏幕截图 2026-02-14 224614.png" "屏幕截图 2026-02-14 224915.png" "屏幕截图 2026-02-14 224951.png" "账号信息获取.png" "配置生成器.png"; do
+            curl -sL "${UPSTREAM}/docs/images/${img}" -o "docs/images/${img}"
+          done
+          
+          # Download static assets
+          curl -sL "${UPSTREAM}/docs/static/favicon.ico" -o docs/static/favicon.ico
+          curl -sL "${UPSTREAM}/docs/static/icon.png" -o docs/static/icon.png
+          curl -sL "${UPSTREAM}/docs/static/css/element-plus/index.css" -o docs/static/css/element-plus/index.css
+          curl -sL "${UPSTREAM}/docs/static/js/vue.global.js" -o docs/static/js/vue.global.js
+          curl -sL "${UPSTREAM}/docs/static/js/icons-vue.js" -o docs/static/js/icons-vue.js
+          curl -sL "${UPSTREAM}/docs/static/js/element-plus.js" -o docs/static/js/element-plus.js
+          curl -sL "${UPSTREAM}/docs/index.html" -o docs/index.html
+          curl -sL "${UPSTREAM}/utils/chinese_new_year_2026_mare.py" -o utils/chinese_new_year_2026_mare.py
+          
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add and commit only binary/large assets
+          git add docs/images/ docs/static/ docs/index.html utils/chinese_new_year_2026_mare.py
+          git commit -m "feat: import binary assets and large files from upstream" || echo "No changes to commit"
+          git push
