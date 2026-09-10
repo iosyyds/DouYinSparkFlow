@@ -2,8 +2,6 @@ name: Sync from upstream
 
 on:
   push:
-    paths:
-      - '.github/workflows/sync-upstream.yml'
   workflow_dispatch:
 
 permissions:
@@ -15,13 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sync repository
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           git clone --bare https://github.com/2061360308/DouYinSparkFlow.git upstream.git
           cd upstream.git
-          git push --mirror "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" || true
-          git push --all "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push --tags "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --all "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --tags "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           echo "Sync complete!"
