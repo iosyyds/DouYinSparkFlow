@@ -1,0 +1,22 @@
+name: Import Upstream Repo
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  workflows: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone and push
+        run: |
+          git clone --bare https://github.com/2061360308/DouYinSparkFlow.git /tmp/upstream
+          cd /tmp/upstream
+          git push --all "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --tags "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
