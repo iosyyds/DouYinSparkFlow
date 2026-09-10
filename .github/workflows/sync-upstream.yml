@@ -1,8 +1,6 @@
 name: Sync from upstream
 
-on:
-  push:
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 
 permissions:
   contents: write
